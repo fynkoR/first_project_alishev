@@ -9,11 +9,11 @@ public class Book {
     private int id;
 
     @NotEmpty
-    @Size(min = 0, max = 100, message = "Name should be between 2 and 100 characters")
+    @Size(min = 2, max = 100, message = "Name should be between 2 and 100 characters")
     private String name;
 
     @NotEmpty
-    @Size(min = 0, max = 100, message = "Name author should be between 2 and 100 characters")
+    @Size(min = 2, max = 100, message = "Name author should be between 2 and 100 characters")
     private String author;
 
     @Min(value = 1900, message = "Year book should be from 1900")
