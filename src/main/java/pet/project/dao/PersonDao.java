@@ -26,6 +26,10 @@ public class PersonDao {
         return jdbcTemplate.query("SELECT * FROM person WHERE id = ?", new BeanPropertyRowMapper<>(Person.class), id)
                 .stream().findAny();
     }
+    public Optional<Person> find(String name){
+        return jdbcTemplate.query("SELECT * FROM person WHERE name = ?", new BeanPropertyRowMapper<>(Person.class), name)
+                .stream().findAny();
+    }
     public void save(Person person){
         jdbcTemplate.update("INSERT INTO person (name, year) VALUES (?,?)",
                 person.getName(), person.getYear());

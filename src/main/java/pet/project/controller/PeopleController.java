@@ -11,18 +11,21 @@ import pet.project.dao.BookDao;
 import pet.project.dao.PersonDao;
 import pet.project.entity.Person;
 import pet.project.exception.NotFoundPersonException;
+import pet.project.util.PersonValidator;
 
 @Controller
 @RequestMapping("/people")
 public class PeopleController {
 
-    private PersonDao personDao;
-    private BookDao bookDao;
+    private final PersonDao personDao;
+    private final BookDao bookDao;
+    private final PersonValidator personValidator;
 
     @Autowired
-    public PeopleController(PersonDao personDao, BookDao bookDao){
+    public PeopleController(PersonDao personDao, BookDao bookDao, PersonValidator personValidator){
         this.personDao = personDao;
         this.bookDao = bookDao;
+        this.personValidator = personValidator;
     }
 
     @GetMapping
@@ -46,6 +49,8 @@ public class PeopleController {
     @PostMapping
     public String create(@ModelAttribute("person") @Valid Person person,
                        BindingResult bindingResult){
+        personValidator.validate(person, bindingResult);
+
         if(bindingResult.hasErrors()){
             return "people/new";
         }
@@ -62,6 +67,8 @@ public class PeopleController {
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("person") @Valid Person person,
                          BindingResult bindingResult, @PathVariable("id") int id){
+        personValidator.validate(person, bindingResult);
+
         if(bindingResult.hasErrors()){
             return "people/edit";
         }
