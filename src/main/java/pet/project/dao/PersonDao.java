@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Component
 public class PersonDao {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public PersonDao(JdbcTemplate jdbcTemplate){

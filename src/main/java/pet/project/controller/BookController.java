@@ -1,12 +1,14 @@
 package pet.project.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pet.project.dao.BookDao;
+import pet.project.dao.PersonDao;
 import pet.project.entity.Book;
 import pet.project.entity.Person;
 import pet.project.exception.NotFoundBookException;
@@ -15,10 +17,12 @@ import pet.project.exception.NotFoundBookException;
 @RequestMapping("/books")
 public class BookController {
     private BookDao bookDao;
+    private PersonDao personDao;
 
     @Autowired
-    public BookController(BookDao bookDao){
+    public BookController(BookDao bookDao, PersonDao personDao){
         this.bookDao = bookDao;
+        this.personDao = personDao;
     }
 
     @GetMapping
@@ -28,8 +32,9 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id, Model model){
+    public String show(@PathVariable("id") int id, Model model, @ModelAttribute("person")Person person){
         model.addAttribute("book", bookDao.find(id).orElseThrow(() -> new NotFoundBookException(id)));
+        model.addAttribute("people", personDao.findAll());
         return "books/show";
     }
     @GetMapping("/new")
@@ -51,7 +56,7 @@ public class BookController {
         model.addAttribute("book", bookDao.find(id).orElseThrow(() -> new NotFoundBookException(id)));
         return "books/edit";
     }
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/edit")
     public String update(@ModelAttribute @Valid Book book,
                          BindingResult bindingResult, @PathVariable("id") int id){
         if(bindingResult.hasErrors()){
@@ -63,6 +68,12 @@ public class BookController {
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id){
         bookDao.delete(id);
+        return "redirect:/books";
+    }
+    @PatchMapping("/{id}")
+    public String updateSetPerson(@PathVariable("id") int id,
+                                  @RequestParam(value = "personId", required = false) Integer personId){
+        bookDao.setPerson(id, personId);
         return "redirect:/books";
     }
 }

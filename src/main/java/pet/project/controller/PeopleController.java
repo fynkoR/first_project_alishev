@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import pet.project.dao.BookDao;
 import pet.project.dao.PersonDao;
 import pet.project.entity.Person;
 import pet.project.exception.NotFoundPersonException;
@@ -16,10 +17,12 @@ import pet.project.exception.NotFoundPersonException;
 public class PeopleController {
 
     private PersonDao personDao;
+    private BookDao bookDao;
 
     @Autowired
-    public PeopleController(PersonDao personDao){
+    public PeopleController(PersonDao personDao, BookDao bookDao){
         this.personDao = personDao;
+        this.bookDao = bookDao;
     }
 
     @GetMapping
@@ -31,6 +34,7 @@ public class PeopleController {
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model){
         model.addAttribute("person", personDao.find(id).orElseThrow(() -> new NotFoundPersonException(id)));
+        model.addAttribute("books", bookDao.findAllBooksByPerson(id));
         return "people/show";
     }
     @GetMapping("/new")

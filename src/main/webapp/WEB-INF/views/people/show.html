@@ -7,6 +7,20 @@
 <body>
 <p th:text="${person.getName()} + ', ' + ${person.getYear()}">VALUE</p>
 
+<div th:with="booksExists=${books.size() > 0}">
+
+    <div th:if="${booksExists}">
+        <p th:text="'Книги: '"></p>
+        <div th:each="book : ${books}">
+            <p th:text="${book.getName()} + ', ' + ${book.getAuthor()} + ', ' + ${book.getYear()}">book</p>
+        </div>
+    </div>
+    <div th:unless="${booksExists}">
+        <p th:text="'Человек пока не взял ни одной книги'"></p>
+    </div>
+
+</div>
+
 <hr/>
 
 <form th:method="GET" th:action="@{{id}/edit(id=${person.getId()})}">
